@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+
 class UIEmojiTextField: UITextField {
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -68,3 +70,4 @@ struct EmojiTextField: UIViewRepresentable {
         }
     }
 }
+#endif

@@ -47,11 +47,13 @@ let package = Package(
                 .product(
                     name: "ExyteMediaPicker",
                     package: "MediaPicker",
-                    // Keep the dependency out of the graph when the MediaPicker trait is disabled.
-                    condition: .when(traits: ["MediaPicker"])
+                    // ExyteMediaPicker is currently iOS-only. We exclude it on macOS to prevent build errors
+                    // even if the "MediaPicker" trait is enabled in the environment.
+                    condition: .when(platforms: [.iOS], traits: ["MediaPicker"])
                 ),
                 .product(name: "ActivityIndicatorView", package: "ActivityIndicatorView"),
-                .product(name: "GiphyUISDK", package: "giphy-ios-sdk"),
+                // GiphyUISDK is currently iOS-only.
+                .product(name: "GiphyUISDK", package: "giphy-ios-sdk", condition: .when(platforms: [.iOS])),
                 .product(name: "Kingfisher", package: "Kingfisher")
             ],
             resources: [
@@ -59,7 +61,7 @@ let package = Package(
             ],
             swiftSettings: [
                 // Source files use this flag to hide MediaPicker-only API and UI.
-                .define("EXYTE_CHAT_ENABLE_MEDIA_PICKER", .when(traits: ["MediaPicker"])),
+                .define("EXYTE_CHAT_ENABLE_MEDIA_PICKER", .when(platforms: [.iOS], traits: ["MediaPicker"])),
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),

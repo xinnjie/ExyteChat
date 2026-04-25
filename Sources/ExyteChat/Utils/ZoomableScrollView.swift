@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+
 struct ZoomableScrollView<Content: View>: UIViewRepresentable {
     private var content: Content
 
@@ -54,3 +56,16 @@ struct ZoomableScrollView<Content: View>: UIViewRepresentable {
         }
     }
 }
+#else
+struct ZoomableScrollView<Content: View>: View {
+    private var content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+    }
+}
+#endif

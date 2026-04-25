@@ -8,6 +8,9 @@
 import SwiftUI
 import Combine
 
+#if canImport(UIKit)
+import UIKit
+
 public extension Notification.Name {
     static let onScrollToBottom = Notification.Name("onScrollToBottom")
 }
@@ -733,6 +736,7 @@ struct UIList<MessageContent: View>: UIViewRepresentable {
         return res
     }
 }
+#endif
 
 extension UIList {
     struct SplitInfo: @unchecked Sendable {

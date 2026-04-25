@@ -41,13 +41,15 @@ final actor RecordingPlayer: ObservableObject {
         }
     }
 
-    private let audioSession = AVAudioSession()
     private var player: AVPlayer?
     private var timeObserver: Any?
 
     init() {
+        #if os(iOS)
+        let audioSession = AVAudioSession()
         try? audioSession.setCategory(.playback)
         try? audioSession.overrideOutputAudioPort(.speaker)
+        #endif
     }
 
     func play(_ recording: Recording) {
@@ -98,7 +100,10 @@ final actor RecordingPlayer: ObservableObject {
     }
 
     private func play() {
+        #if os(iOS)
+        let audioSession = AVAudioSession()
         try? audioSession.setActive(true)
+        #endif
         player?.play()
         internalPlaying = true
         NotificationCenter.default.post(name: .chatAudioIsPlaying, object: self)

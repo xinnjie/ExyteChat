@@ -3,7 +3,11 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 extension AttributedString {
 
@@ -15,9 +19,9 @@ extension AttributedString {
     }
 
     func toAttrString(font: UIFont) -> NSAttributedString {
-        var str = self
-        str.setAttributes(AttributeContainer([.font: font]))
-        return NSAttributedString(str)
+        let string = NSMutableAttributedString(attributedString: NSAttributedString(self))
+        string.addAttribute(.font, value: font, range: NSRange(location: 0, length: string.length))
+        return string
     }
 
     public func lastLineWidth(labelWidth: CGFloat, font: UIFont) -> CGFloat {

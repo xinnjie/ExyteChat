@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if canImport(GiphyUISDK)
 import GiphyUISDK
+#endif
 #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
 
@@ -109,6 +111,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
             .background(chatBackground())
             .environmentObject(keyboardState)
             .onAppear {
+                #if canImport(GiphyUISDK)
                 if isGiphyAvailable() {
                     if let giphyKey = giphyConfig.giphyKey {
                         if !giphyConfigured {
@@ -119,6 +122,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                         print("WARNING: giphy key not provided, please pass a key using giphyConfig")
                     }
                 }
+                #endif
             }
             .onChange(of: inputViewModel.text) { _ , newValue in
                 inputViewCustomizationParameters.onInputTextChange?(newValue)
@@ -144,6 +148,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                     globalFocusState.focus = nil
                 }
             }
+            #if canImport(GiphyUISDK)
             .sheet(isPresented: $inputViewModel.showGiphyPicker) {
                 if giphyConfig.giphyKey != nil {
                     GiphyEditorView(
@@ -155,6 +160,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                     Text("no giphy key found")
                 }
             }
+            #endif
             #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             .fullScreenCover(isPresented: $inputViewModel.showPicker) {
                 AttachmentsEditor(
@@ -168,6 +174,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                 .environmentObject(keyboardState)
             }
             #endif
+            #if canImport(UIKit)
             .fullScreenCover(isPresented: $viewModel.fullscreenAttachmentPresented) {
                 let attachments = sections.flatMap { section in section.rows.flatMap { $0.message.attachments } }
                 let index = attachments.firstIndex { $0.id == viewModel.fullscreenAttachmentItem?.id }
@@ -186,6 +193,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                     .ignoresSafeArea()
                 }
             }
+            #endif
             .background {
                 // assume all the time views have same width, like "00:00"
                 if let anyMessage = sections.first?.rows.first?.message, timeViewSize == .zero {
@@ -308,12 +316,14 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
         .onStatusBarTap {
             shouldScrollToTop()
         }
+        #if canImport(UIKit)
         .transparentNonAnimatingFullScreenCover(item: $viewModel.messageMenuRow) {
             if let row = viewModel.messageMenuRow {
                 messageMenu(row)
                     .onAppear(perform: showMessageMenu)
             }
         }
+        #endif
         .onPreferenceChange(MessageMenuPreferenceKey.self) { frames in
             DispatchQueue.main.async {
                 if self.cellFrames != frames {
@@ -381,6 +391,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
         .onDisappear(perform: inputViewModel.onStop)
     }
     
+    #if canImport(UIKit)
     func messageMenu(_ row: MessageRow) -> some View {
         let cellFrame = cellFrames[row.id] ?? .zero
 
@@ -426,6 +437,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
             return .left
         }
     }
+    #endif
     
     /// Our default reactionCallback flow if the user supports Reactions by implementing the didReactToMessage closure
     private func reactionClosure(_ message: Message) -> (ReactionType?) -> () {
@@ -487,62 +499,66 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
     }
     
     private func isLandscape() -> Bool {
-        UIDevice.current.orientation.isLandscape
+        PlatformScreen.isLandscape
     }
     
     private func isGiphyAvailable() -> Bool {
+        #if canImport(GiphyUISDK)
         inputViewCustomizationParameters.availableInputs.contains(AvailableInputType.giphy)
+        #else
+        false
+        #endif
     }
 }
 
-//#Preview {
-//    let romeo = User(id: "romeo", name: "Romeo Montague", avatarURL: nil, isCurrentUser: true)
-//    let juliet = User(id: "juliet", name: "Juliet Capulet", avatarURL: nil, isCurrentUser: false)
-//
-//    let monday = try! Date.iso8601Date.parse("2025-05-12")
-//    let tuesday = try! Date.iso8601Date.parse("2025-05-13")
-//
-//    ChatView(messages: [
-//        Message(
-//            id: "26tb", user: romeo, status: .read, createdAt: monday,
-//            text: "And I’ll still stay, to have thee still forget"),
-//        Message(
-//            id: "zee6", user: romeo, status: .read, createdAt: monday,
-//            text: "Forgetting any other home but this"),
-//
-//        Message(
-//            id: "oWUN", user: juliet, status: .read, createdAt: monday,
-//            text: "’Tis almost morning. I would have thee gone"),
-//        Message(
-//            id: "P261", user: juliet, status: .read, createdAt: monday,
-//            text: "And yet no farther than a wanton’s bird"),
-//        Message(
-//            id: "46hu", user: juliet, status: .read, createdAt: monday,
-//            text: "That lets it hop a little from his hand"),
-//        Message(
-//            id: "Gjbm", user: juliet, status: .read, createdAt: monday,
-//            text: "Like a poor prisoner in his twisted gyves"),
-//        Message(
-//            id: "IhRQ", user: juliet, status: .read, createdAt: monday,
-//            text: "And with a silken thread plucks it back again"),
-//        Message(
-//            id: "kwWd", user: juliet, status: .read, createdAt: monday,
-//            text: "So loving-jealous of his liberty"),
-//
-//        Message(
-//            id: "9481", user: romeo, status: .read, createdAt: tuesday,
-//            text: "I would I were thy bird"),
-//
-//        Message(
-//            id: "dzmY", user: juliet, status: .sent, createdAt: tuesday, text: "Sweet, so would I"),
-//        Message(
-//            id: "r5HH", user: juliet, status: .sent, createdAt: tuesday,
-//            text: "Yet I should kill thee with much cherishing"),
-//        Message(
-//            id: "quy1", user: juliet, status: .sent, createdAt: tuesday,
-//            text: "Good night, good night. Parting is such sweet sorrow"),
-//        Message(
-//            id: "Mwh6", user: juliet, status: .sent, createdAt: tuesday,
-//            text: "That I shall say 'Good night' till it be morrow"),
-//    ]) { draft in }
-//}
+#Preview {
+   let romeo = User(id: "romeo", name: "Romeo Montague", avatarURL: nil, isCurrentUser: true)
+   let juliet = User(id: "juliet", name: "Juliet Capulet", avatarURL: nil, isCurrentUser: false)
+
+   let monday = try! Date.iso8601Date.parse("2025-05-12")
+   let tuesday = try! Date.iso8601Date.parse("2025-05-13")
+
+   ChatView(messages: [
+       Message(
+           id: "26tb", user: romeo, status: .read, createdAt: monday,
+           text: "And I’ll still stay, to have thee still forget"),
+       Message(
+           id: "zee6", user: romeo, status: .read, createdAt: monday,
+           text: "Forgetting any other home but this"),
+
+       Message(
+           id: "oWUN", user: juliet, status: .read, createdAt: monday,
+           text: "’Tis almost morning. I would have thee gone"),
+       Message(
+           id: "P261", user: juliet, status: .read, createdAt: monday,
+           text: "And yet no farther than a wanton’s bird"),
+       Message(
+           id: "46hu", user: juliet, status: .read, createdAt: monday,
+           text: "That lets it hop a little from his hand"),
+       Message(
+           id: "Gjbm", user: juliet, status: .read, createdAt: monday,
+           text: "Like a poor prisoner in his twisted gyves"),
+       Message(
+           id: "IhRQ", user: juliet, status: .read, createdAt: monday,
+           text: "And with a silken thread plucks it back again"),
+       Message(
+           id: "kwWd", user: juliet, status: .read, createdAt: monday,
+           text: "So loving-jealous of his liberty"),
+
+       Message(
+           id: "9481", user: romeo, status: .read, createdAt: tuesday,
+           text: "I would I were thy bird"),
+
+       Message(
+           id: "dzmY", user: juliet, status: .sent, createdAt: tuesday, text: "Sweet, so would I"),
+       Message(
+           id: "r5HH", user: juliet, status: .sent, createdAt: tuesday,
+           text: "Yet I should kill thee with much cherishing"),
+       Message(
+           id: "quy1", user: juliet, status: .sent, createdAt: tuesday,
+           text: "Good night, good night. Parting is such sweet sorrow"),
+       Message(
+           id: "Mwh6", user: juliet, status: .sent, createdAt: tuesday,
+           text: "That I shall say 'Good night' till it be morrow"),
+   ]) { draft in }
+}

@@ -18,7 +18,13 @@ struct ActivityIndicator: View {
     var body: some View {
         ZStack {
             if showBackground {
-                Color(UIColor.secondarySystemBackground).opacity(0.8)
+                Group {
+                #if canImport(UIKit)
+                    Color(UIColor.secondarySystemBackground).opacity(0.8)
+                #else
+                    Color.secondary.opacity(0.15)
+                #endif
+                }
                     .frame(width: 100, height: 100)
                     .cornerRadius(8)
             }

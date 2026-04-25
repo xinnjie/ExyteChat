@@ -1,4 +1,6 @@
 import Combine
+
+#if canImport(GiphyUISDK)
 import GiphyUISDK
 import SwiftUI
 import UIKit
@@ -82,4 +84,5 @@ public struct GiphyPicker: UIViewControllerRepresentable {
 extension GPHMedia: @retroactive @unchecked Sendable { }
 #else
 extension GPHMedia: @unchecked Sendable { }
+#endif
 #endif

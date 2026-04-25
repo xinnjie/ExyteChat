@@ -8,6 +8,7 @@
 import Foundation
 @preconcurrency import AVFoundation
 
+#if os(iOS)
 final actor Recorder {
 
     // duration and waveform samples
@@ -94,7 +95,7 @@ final actor Recorder {
     func onTimer(_ durationProgressHandler: @escaping ProgressHandler) {
         audioRecorder?.updateMeters()
         if let power = audioRecorder?.averagePower(forChannel: 0) {
-            // power from 0 db (max) to -60 db (roughly min)
+            // Normalize decibel power from [-60, 0] dB range to [0, 1] for waveform display.
             let adjustedPower = 1 - (max(power, -60) / 60 * -1)
             soundSamples.append(CGFloat(adjustedPower))
         }
@@ -129,6 +130,22 @@ final actor Recorder {
         }
     }
 }
+#else
+/*
+ Audio recording is currently not implemented for macOS.
+ This stub provides a compatible interface to keep the rest of the application functional.
+ */
+final actor Recorder {
+    typealias ProgressHandler = @Sendable (Double, [CGFloat]) -> Void
+
+    var isAllowedToRecordAudio: Bool { false }
+    var isRecording: Bool { false }
+
+    func setRecorderSettings(_ recorderSettings: RecorderSettings) {}
+    func startRecording(durationProgressHandler: @escaping ProgressHandler) async -> URL? { nil }
+    func stopRecording() {}
+}
+#endif
 
 public struct RecorderSettings : Codable,Hashable {
     var audioFormatID: AudioFormatID
@@ -160,6 +177,7 @@ public struct RecorderSettings : Codable,Hashable {
     }
 }
 
+#if os(iOS)
 extension AVAudioSession {
     func requestRecordPermission() async -> Bool {
         await withCheckedContinuation { continuation in
@@ -169,3 +187,4 @@ extension AVAudioSession {
         }
     }
 }
+#endif

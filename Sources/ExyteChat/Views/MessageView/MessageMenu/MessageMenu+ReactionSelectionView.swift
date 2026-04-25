@@ -5,6 +5,8 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+
 struct ReactionSelectionView: View {
     
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -432,3 +434,4 @@ internal struct InteriorRadialShadow: ViewModifier {
     }
     .frame(width: 400, height: 100)
 }
+#endif

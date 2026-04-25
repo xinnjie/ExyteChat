@@ -9,7 +9,9 @@ import SwiftUI
 #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
 #endif
+#if canImport(GiphyUISDK)
 import GiphyUISDK
+#endif
 
 public enum InputViewStyle: Sendable {
     case message
@@ -563,7 +565,7 @@ struct InputView: View {
                     onAction(.recordAudioLock)
                 }
                 
-                if value.location.x < UIScreen.main.bounds.width/2,
+                if value.location.x < PlatformScreen.width / 2,
                    value.location.y > recordButtonFrame.minY {
                     cancelGesture = true
                     onAction(.deleteRecord)
@@ -597,7 +599,11 @@ struct InputView: View {
     }
     
     private func isGiphyAvailable() -> Bool {
+        #if canImport(GiphyUISDK)
         return availableInputs.contains(AvailableInputType.giphy)
+        #else
+        return false
+        #endif
     }
     
     private func isMediaAvailable() -> Bool {
@@ -609,6 +615,7 @@ struct InputView: View {
     }
 }
 
+#if canImport(UIKit)
 @MainActor
 func performBatchTableUpdates(_ tableView: UITableView, closure: ()->()) async {
     await withCheckedContinuation { continuation in
@@ -619,3 +626,4 @@ func performBatchTableUpdates(_ tableView: UITableView, closure: ()->()) async {
         }
     }
 }
+#endif

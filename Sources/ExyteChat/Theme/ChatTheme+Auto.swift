@@ -20,6 +20,7 @@ extension View {
 
 // MARK: iOS 18+ Auto Themes Based on Accent Color
 
+#if canImport(UIKit)
 extension View {
     /// Creates and applies a `ChatTheme` to your `ChatView` based around the provided `color`
     /// - Parameters:
@@ -124,6 +125,7 @@ internal struct ThemedChatView: ViewModifier {
         #endif
     }
 }
+#endif
 
 // stub for earlier versions
 #if swift(<6.0)

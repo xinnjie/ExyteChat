@@ -50,7 +50,11 @@ struct MessageCustomizationParameters {
 struct InputViewCustomizationParameters {
     var externalInputText: String? // External → Internal
     var onInputTextChange: ((String) -> Void)? // Internal → External
+    #if os(macOS)
+    var availableInputs: [AvailableInputType] = [.text]
+    #else
     var availableInputs: [AvailableInputType] = [.text, .audio, .media]
+    #endif
     var recorderSettings = RecorderSettings()
     #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     var mediaPickerParameters = MediaPickerParameters()

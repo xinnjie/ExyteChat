@@ -91,7 +91,7 @@ struct RecordWaveformPlaying: View {
         self.color = color
         self.addExtraDots = addExtraDots
         self.progressChangeHandler = progressChangeHandler
-        self.adjustedSamples = adjustedSamples(UIScreen.main.bounds.width)
+        self.adjustedSamples = adjustedSamples(PlatformScreen.width)
         self.maxLength = max((RecordWaveform.spacing + RecordWaveform.width) * CGFloat(self.adjustedSamples.count) - RecordWaveform.spacing, 0)
     }
 

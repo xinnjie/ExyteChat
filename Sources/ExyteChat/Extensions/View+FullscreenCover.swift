@@ -10,10 +10,15 @@ import SwiftUI
 extension View {
 
     func transparentNonAnimatingFullScreenCover<Item, Content>(item: Binding<Item?>, @ViewBuilder content: @escaping () -> Content) -> some View where Item : Equatable, Item : Identifiable, Content : View {
+        #if canImport(UIKit)
         modifier(TransparentNonAnimatableFullScreenModifier(item: item, fullScreenContent: content))
+        #else
+        self
+        #endif
     }
 }
 
+#if canImport(UIKit)
 private struct TransparentNonAnimatableFullScreenModifier<Item, FullScreenContent>: ViewModifier where Item : Equatable, Item : Identifiable, FullScreenContent : View {
 
     @Binding var item: Item?
@@ -60,3 +65,4 @@ private struct FullScreenCoverBackgroundRemovalView: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {}
 
 }
+#endif

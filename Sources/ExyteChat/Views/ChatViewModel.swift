@@ -4,7 +4,9 @@
 
 import Foundation
 import Combine
+#if canImport(UIKit)
 import UIKit
+#endif
 import SwiftUI
 
 @MainActor
@@ -56,7 +58,7 @@ final class ChatViewModel: ObservableObject {
     func messageMenuActionInternal(message: Message, action: DefaultMessageMenuAction) {
         switch action {
         case .copy:
-            UIPasteboard.general.string = String(message.attributedText.characters)
+            PlatformPasteboard.copy(String(message.attributedText.characters))
         case .reply:
             withAnimation(.easeInOut(duration: 0.2)) {
                 inputViewModel?.attachments.replyMessage = message.toReplyMessage()

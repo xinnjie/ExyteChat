@@ -3,7 +3,17 @@
 //
 
 import Foundation
+#if canImport(GiphyUISDK)
 import GiphyUISDK
+#else
+public struct GPHMedia: Sendable, Equatable {
+    public let id: String?
+
+    public init(id: String? = nil) {
+        self.id = id
+    }
+}
+#endif
 #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
 #else

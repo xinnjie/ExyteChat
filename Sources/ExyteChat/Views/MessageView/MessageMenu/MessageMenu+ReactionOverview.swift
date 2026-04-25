@@ -5,6 +5,8 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+
 struct ReactionOverview: View {
 
     @StateObject var viewModel: ChatViewModel
@@ -163,5 +165,6 @@ struct ReactionOverview: View {
             backgroundColor: Color(UIColor.secondarySystemBackground),
             inScrollView: false
         )
-    }
+}
+#endif
 #endif

@@ -5,6 +5,7 @@
 import Foundation
 import SwiftUI
 
+#if canImport(UIKit)
 struct FullscreenMediaPages: View {
 
     @Environment(\.chatTheme) private var theme
@@ -148,3 +149,14 @@ private extension FullscreenMediaPages {
         CGSize(width: 0, height: max(size.height, 0))
     }
 }
+#else
+struct FullscreenMediaPages: View {
+    @StateObject var viewModel: FullscreenMediaPagesViewModel
+    var safeAreaInsets: EdgeInsets
+    var onClose: () -> Void
+
+    var body: some View {
+        EmptyView()
+    }
+}
+#endif

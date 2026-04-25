@@ -6,19 +6,26 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#endif
 
 public extension View {
 
     /// for this to work make sure all the other scrollViews have scrollsToTop = false
     func onStatusBarTap(onTap: @escaping () -> ()) -> some View {
+        #if canImport(UIKit)
         self.overlay {
             StatusBarTabDetector(onTap: onTap)
                 .offset(x: UIScreen.main.bounds.width)
         }
+        #else
+        self
+        #endif
     }
 }
 
+#if canImport(UIKit)
 private struct StatusBarTabDetector: UIViewRepresentable {
 
     var onTap: () -> ()
@@ -52,3 +59,4 @@ private struct StatusBarTabDetector: UIViewRepresentable {
         }
     }
 }
+#endif

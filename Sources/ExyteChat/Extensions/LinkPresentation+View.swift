@@ -13,6 +13,8 @@
 @preconcurrency import LinkPresentation
 import SwiftUI
 
+#if canImport(UIKit)
+
 /// Lightweight wrapper around LPLinkView, that allows for more convenient use from SwiftUI.
 private struct LinkViewRepresentable: UIViewRepresentable {
 
@@ -110,6 +112,21 @@ struct LinkPillView: View {
     }
 
 }
+
+#else
+struct LinkPillView: View {
+    let url: URL
+
+    var body: some View {
+        Link(url.host ?? url.absoluteString, destination: url)
+            .lineLimit(1)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(.thinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+#endif
 
 #Preview {
     LinkPillView(url: URL(string: "https://example.org")!)

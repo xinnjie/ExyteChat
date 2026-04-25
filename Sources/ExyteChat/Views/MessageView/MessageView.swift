@@ -53,7 +53,7 @@ struct MessageView: View {
         let statusViewWithPaddings = MessageView.statusViewWidth + MessageView.horizontalSpacing
         let textPaddings = MessageView.horizontalTextPadding * 2
         let widthWithoutMedia =
-            UIScreen.main.bounds.width
+            PlatformScreen.width
             - bubblePaddings
             - (isCurrentUser && params.showAvatar ? 0 : avatarViewWithPaddings)
             - (isCurrentUser ? MessageView.statusViewWidth : 0)
@@ -132,7 +132,7 @@ struct MessageView: View {
             message.user.isCurrentUser ? .leading : .trailing, MessageView.horizontalBubblePadding
         )
         .frame(
-            maxWidth: UIScreen.main.bounds.width,
+            maxWidth: PlatformScreen.width,
             alignment: message.user.isCurrentUser ? .trailing : .leading
         )
     }
@@ -277,8 +277,10 @@ struct MessageView: View {
 
     @ViewBuilder
     func giphyView(_ giphyMediaId: String) -> some View {
+        #if canImport(GiphyUISDK)
         GiphyMediaView(id: giphyMediaId, aspectRatio: $giphyAspectRatio)
             .frame(width: 200 * giphyAspectRatio, height: 200)
+        #endif
     }
 
     @ViewBuilder

@@ -5,6 +5,14 @@
 
 import SwiftUI
 
+#if os(macOS)
+extension MessageView {
+    @ViewBuilder
+    func reactionsView(_ message: Message, maxReactions: Int = 5) -> some View {
+        EmptyView()
+    }
+}
+#else
 extension MessageView {
     
     @ViewBuilder
@@ -97,6 +105,7 @@ extension MessageView {
         )
     }
 }
+#endif
 
 struct ReactionBubble: View {
     

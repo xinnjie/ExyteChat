@@ -1,4 +1,6 @@
 import SwiftUI
+
+#if canImport(GiphyUISDK)
 import GiphyUISDK
 
 struct GiphyEditorView: View {
@@ -33,3 +35,4 @@ struct GiphyEditorView: View {
     }
     
 }
+#endif

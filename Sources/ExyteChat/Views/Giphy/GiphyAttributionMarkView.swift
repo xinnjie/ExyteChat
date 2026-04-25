@@ -1,5 +1,8 @@
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+
 class CustomTabBarController: UITabBarController {
   var tabBarHeight: CGFloat {
     tabBar.frame.size.height
@@ -30,3 +33,4 @@ struct GiphyAttributionMarkView: View {
     }
     
 }
+#endif

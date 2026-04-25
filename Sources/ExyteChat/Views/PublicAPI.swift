@@ -277,7 +277,11 @@ public extension ChatView {
 
     func setAvailableInputs(_ types: [AvailableInputType]) -> ChatView {
         var view = self
+        #if os(macOS)
+        view.inputViewCustomizationParameters.availableInputs = types.filter { $0 == .text }
+        #else
         view.inputViewCustomizationParameters.availableInputs = types
+        #endif
         return view
     }
 

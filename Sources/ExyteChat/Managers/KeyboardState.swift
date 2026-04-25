@@ -4,7 +4,9 @@
 
 import Foundation
 import Combine
+#if canImport(UIKit)
 import UIKit
+#endif
 
 @MainActor
 public final class KeyboardState: ObservableObject {
@@ -19,12 +21,15 @@ public final class KeyboardState: ObservableObject {
 
     /// Requests the dismissal of the current / active keyboard
     public func resignFirstResponder() {
+        #if canImport(UIKit)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        #endif
     }
 }
 
 private extension KeyboardState {
     func subscribeKeyboardNotifications() {
+        #if canImport(UIKit)
         let pub = Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
@@ -41,5 +46,6 @@ private extension KeyboardState {
         pub.assign(to: \.keyboardFrame, on: self).store(in: &subscriptions)
         // Map the CGRect into a Bool, assign it to isShown and store the sub
         pub.map { $0 != .zero }.assign(to: \.isShown, on: self).store(in: &subscriptions)
+        #endif
     }
 }

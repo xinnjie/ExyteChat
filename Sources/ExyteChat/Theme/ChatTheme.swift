@@ -86,6 +86,7 @@ public struct ChatTheme {
         )
     }
     
+    #if canImport(UIKit)
     @available(iOS 18.0, *)
     internal init(accentColor: Color, background: ThemedBackgroundStyle = .mixedWithAccentColor(), improveContrast: Bool) {
         let backgroundColor: Color = background.getBackgroundColor(withAccent: accentColor, improveContrast: improveContrast)
@@ -104,6 +105,7 @@ public struct ChatTheme {
             )
         )
     }
+    #endif
 
     public struct Colors {
         public var mainBG: Color
@@ -445,10 +447,10 @@ public struct ChatTheme {
                 pauseVideo: pauseVideo ?? Image(systemName: "pause.circle.fill"),
                 playAudio: playAudio ?? Image("playAudio", bundle: .current),
                 playVideo: playVideo ?? Image(systemName: "play.circle.fill"),
-                read: read ?? Image(uiImage: UIImage(named: "checkAll", in: .current, with: nil)!),
+                read: read ?? Image("checkAll", bundle: .current),
                 sending: sending ?? Image(systemName: "clock"),
-                delivered: delivered ?? Image(uiImage: UIImage(named: "checkAll", in: .current, with: nil)!),
-                sent: sent ?? Image(uiImage: UIImage(named: "check", in: .current, with: nil)!)
+                delivered: delivered ?? Image("checkAll", bundle: .current),
+                sent: sent ?? Image("check", bundle: .current)
             )
 
             self.messageMenu = MessageMenu(

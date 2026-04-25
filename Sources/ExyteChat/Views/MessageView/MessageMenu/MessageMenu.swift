@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+
 enum MessageMenuAlignment {
     case left
     case right
@@ -676,3 +678,4 @@ extension View {
         modifier(MenuContainerModifier(style: style, background: background))
     }
 }
+#endif

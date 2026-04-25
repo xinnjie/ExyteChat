@@ -1,3 +1,4 @@
+#if canImport(GiphyUISDK)
 import GiphyUISDK
 import SwiftUI
 
@@ -24,3 +25,4 @@ struct GiphyMediaView: UIViewRepresentable {
         // uiView.media = media
     }
 }
+#endif
