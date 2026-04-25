@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#endif
 
 public extension ChatView {
 
@@ -287,6 +289,8 @@ public extension ChatView {
 
     // MARK: - Media picker
 
+    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
+    // These APIs expose ExyteMediaPicker types, so they disappear when the trait is disabled.
     func setMediaPickerLiveCameraStyle(_ style: MediaPickerLiveCameraStyle) -> ChatView {
         var view = self
         view.inputViewCustomizationParameters.mediaPickerParameters.liveCameraStyle = style
@@ -316,4 +320,5 @@ public extension ChatView {
         view.inputViewCustomizationParameters.mediaPickerParameters = params
         return view
     }
+    #endif
 }

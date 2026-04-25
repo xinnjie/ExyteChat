@@ -4,7 +4,12 @@
 
 import Foundation
 import GiphyUISDK
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#else
+// Preserve DraftMessage.medias without pulling ExyteMediaPicker into the dependency graph.
+public enum Media: Sendable {}
+#endif
 
 public struct DraftMessage: Sendable {
     public var id: String?
@@ -31,4 +36,3 @@ public struct DraftMessage: Sendable {
         self.createdAt = createdAt
     }
 }
-

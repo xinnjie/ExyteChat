@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#endif
 import GiphyUISDK
 
 public enum InputViewStyle: Sendable {
@@ -73,7 +75,9 @@ public struct InputViewAttachments {
 struct InputView: View {
     
     @Environment(\.chatTheme) private var theme
+    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     @Environment(\.mediaPickerTheme) private var pickerTheme
+    #endif
 
     @EnvironmentObject private var keyboardState: KeyboardState
     
@@ -151,11 +155,15 @@ struct InputView: View {
                     giphyButton
                 }
             case .signature:
+                #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
                 if viewModel.mediaPickerMode == .cameraSelection {
                     addButton
                 } else {
                     Color.clear.frame(width: 12, height: 1)
                 }
+                #else
+                Color.clear.frame(width: 12, height: 1)
+                #endif
             }
         }
     }
@@ -526,7 +534,11 @@ struct InputView: View {
         case .message:
             return theme.colors.mainBG
         case .signature:
+            #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             return pickerTheme.main.pickerBackground
+            #else
+            return theme.colors.mainBG
+            #endif
         }
     }
 
@@ -589,7 +601,11 @@ struct InputView: View {
     }
     
     private func isMediaAvailable() -> Bool {
+        #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
         return availableInputs.contains(AvailableInputType.media)
+        #else
+        return false
+        #endif
     }
 }
 

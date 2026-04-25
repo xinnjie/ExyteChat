@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#endif
 
 struct ChatCustomizationParameters {
     var isListAboveInputView: Bool = true
@@ -50,7 +52,11 @@ struct InputViewCustomizationParameters {
     var onInputTextChange: ((String) -> Void)? // Internal → External
     var availableInputs: [AvailableInputType] = [.text, .audio, .media]
     var recorderSettings = RecorderSettings()
+    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     var mediaPickerParameters = MediaPickerParameters()
+    #endif
 }
 
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 public typealias MediaPickerParameters = ExyteMediaPicker.MediaPickerCutomizationParameters
+#endif

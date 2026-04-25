@@ -7,10 +7,12 @@
 
 import SwiftUI
 import GiphyUISDK
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
 
 public typealias MediaPickerLiveCameraStyle = LiveCameraCellStyle
 public typealias MediaPickerSelectionParameters = SelectionParameters
+#endif
 
 public enum ChatType: CaseIterable, Sendable {
     case conversation // the latest message is at the bottom, new messages appear from the bottom
@@ -153,6 +155,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                     Text("no giphy key found")
                 }
             }
+            #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             .fullScreenCover(isPresented: $inputViewModel.showPicker) {
                 AttachmentsEditor(
                     inputViewModel: inputViewModel,
@@ -164,6 +167,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                 .environmentObject(globalFocusState)
                 .environmentObject(keyboardState)
             }
+            #endif
             .fullScreenCover(isPresented: $viewModel.fullscreenAttachmentPresented) {
                 let attachments = sections.flatMap { section in section.rows.flatMap { $0.message.attachments } }
                 let index = attachments.firstIndex { $0.id == viewModel.fullscreenAttachmentItem?.id }

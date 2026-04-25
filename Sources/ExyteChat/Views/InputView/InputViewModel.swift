@@ -4,7 +4,9 @@
 
 import Foundation
 import Combine
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#endif
 import SwiftUI
 
 @MainActor
@@ -17,7 +19,9 @@ final class InputViewModel: ObservableObject {
     @Published var showGiphyPicker = false
     @Published var showPicker = false
   
+    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     @Published var mediaPickerMode = MediaPickerMode.photos
+    #endif
 
     @Published var showActivityIndicator = false
 
@@ -83,13 +87,19 @@ final class InputViewModel: ObservableObject {
         case .giphy:
             showGiphyPicker = true
         case .photo:
+            #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             mediaPickerMode = .photos
             showPicker = true
+            #endif
         case .add:
+            #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             mediaPickerMode = .camera
+            #endif
         case .camera:
+            #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             mediaPickerMode = .camera
             showPicker = true
+            #endif
         case .send:
             send()
         case .recordAudioTap:

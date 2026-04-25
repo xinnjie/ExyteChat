@@ -14,6 +14,14 @@ let package = Package(
             name: "ExyteChat",
             targets: ["ExyteChat"]),
     ],
+    traits: [
+        // MediaPicker is part of the default feature set. Clients can opt out by disabling default traits.
+        .default(enabledTraits: ["MediaPicker"]),
+        .trait(
+            name: "MediaPicker",
+            description: "Enable the built-in media picker integration."
+        ),
+    ],
     dependencies: [
         .package(
             url: "https://github.com/exyte/MediaPicker.git",
@@ -36,12 +44,22 @@ let package = Package(
         .target(
             name: "ExyteChat",
             dependencies: [
-                .product(name: "ExyteMediaPicker", package: "MediaPicker"),
+                .product(
+                    name: "ExyteMediaPicker",
+                    package: "MediaPicker",
+                    // Keep the dependency out of the graph when the MediaPicker trait is disabled.
+                    condition: .when(traits: ["MediaPicker"])
+                ),
                 .product(name: "ActivityIndicatorView", package: "ActivityIndicatorView"),
                 .product(name: "GiphyUISDK", package: "giphy-ios-sdk"),
                 .product(name: "Kingfisher", package: "Kingfisher")
             ],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
+                // Source files use this flag to hide MediaPicker-only API and UI.
+                .define("EXYTE_CHAT_ENABLE_MEDIA_PICKER", .when(traits: ["MediaPicker"])),
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),

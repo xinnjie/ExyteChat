@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 import ExyteMediaPicker
+#endif
 import ActivityIndicatorView
 
+#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 struct AttachmentsEditor<InputViewContent: View>: View {
     
     typealias InputViewBuilderParamsClosure = ChatView<EmptyView, InputViewContent, DefaultMessageMenuAction>.InputViewBuilderParamsClosure
@@ -191,3 +194,4 @@ struct AttachmentsEditor<InputViewContent: View>: View {
         .padding(.horizontal)
     }
 }
+#endif
