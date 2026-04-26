@@ -13,6 +13,7 @@ struct ChatExampleView: View {
 
     @StateObject var viewModel: ChatExampleViewModel
     var title: String
+    var photoPickerBackend: ChatPhotoPickerBackend = .builtIn
 
     @State var text = ""
     @State var scrollToID: String?
@@ -30,6 +31,7 @@ struct ChatExampleView: View {
         .scrollToMessageID(scrollToID)
         .keyboardDismissMode(.interactive)
         .showUsername(true)
+        .photoPickerBackend(photoPickerBackend)
         .setMediaPickerLiveCameraStyle(.prominant)
         .setRecorderSettings(recorderSettings)
         .messageReactionDelegate(viewModel)

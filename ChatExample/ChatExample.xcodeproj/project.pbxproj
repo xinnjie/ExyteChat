@@ -25,7 +25,6 @@
 		5B03D45F2EE05B5800A09B98 /* ExyteChat in Frameworks */ = {isa = PBXBuildFile; productRef = 5B03D45E2EE05B5800A09B98 /* ExyteChat */; };
 		5B0636D72C2E9F6100E54AEE /* CommentsExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0636D52C2E9F6100E54AEE /* CommentsExampleView.swift */; };
 		5B0636DB2C2EA21900E54AEE /* Sequence+asyncMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0636DA2C2EA21900E54AEE /* Sequence+asyncMap.swift */; };
-		5B6467A02D96F4FC00FFD920 /* ExyteChat in Frameworks */ = {isa = PBXBuildFile; productRef = 5B64679F2D96F4FC00FFD920 /* ExyteChat */; };
 		5B6D3A732987D85A00765148 /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6D3A722987D85A00765148 /* Color+hex.swift */; };
 		FF220E5D2DD9F0B700BE315E /* .editorconfig in Resources */ = {isa = PBXBuildFile; fileRef = FF220E5C2DD9F0AF00BE315E /* .editorconfig */; };
 /* End PBXBuildFile section */
@@ -73,7 +72,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B03D45F2EE05B5800A09B98 /* ExyteChat in Frameworks */,
-				5B6467A02D96F4FC00FFD920 /* ExyteChat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +203,6 @@
 			);
 			name = ChatExample;
 			packageProductDependencies = (
-				5B64679F2D96F4FC00FFD920 /* ExyteChat */,
 				5B03D45E2EE05B5800A09B98 /* ExyteChat */,
 			);
 			productName = ChatExample;
@@ -237,7 +234,7 @@
 			);
 			mainGroup = 135549272864620900C9459A;
 			packageReferences = (
-				5B03D45D2EE05B5800A09B98 /* XCLocalSwiftPackageReference "../../Chat" */,
+				5B03D45D2EE05B5800A09B98 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = 135549312864620900C9459A /* Products */;
 			projectDirPath = "";
@@ -511,19 +508,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5B03D45D2EE05B5800A09B98 /* XCLocalSwiftPackageReference "../../Chat" */ = {
+		5B03D45D2EE05B5800A09B98 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Chat;
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		5B03D45E2EE05B5800A09B98 /* ExyteChat */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = ExyteChat;
-		};
-		5B64679F2D96F4FC00FFD920 /* ExyteChat */ = {
-			isa = XCSwiftPackageProductDependency;
+			package = 5B03D45D2EE05B5800A09B98 /* XCLocalSwiftPackageReference ".." */;
 			productName = ExyteChat;
 		};
 /* End XCSwiftPackageProductDependency section */

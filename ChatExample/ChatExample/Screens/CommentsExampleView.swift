@@ -49,6 +49,7 @@ enum Action: MessageMenuAction {
 struct CommentsExampleView: View {
 
     @StateObject var viewModel = ChatExampleViewModel()
+    var photoPickerBackend: ChatPhotoPickerBackend = .builtIn
 
     var body: some View {
         VStack {
@@ -85,6 +86,7 @@ struct CommentsExampleView: View {
                 }
             }
             .showDateHeaders(false)
+            .photoPickerBackend(photoPickerBackend)
             .swipeActions(edge: .leading, performsFirstActionWithFullSwipe: false, items: [
                 // SwipeActions are similar to Buttons, they accept an Action and a ViewBuilder
                 SwipeAction(action: onDelete, activeFor: { $0.user.isCurrentUser }, background: .red) {

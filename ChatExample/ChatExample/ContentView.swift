@@ -10,6 +10,7 @@ struct ContentView: View {
     
     @State private var theme: ExampleThemeState = .accent
     @State private var color = Color(.exampleBlue)
+    @State private var photoPickerBackend: ExamplePhotoPickerBackend = .builtIn
     
     var body: some View {
         NavigationView {
@@ -19,13 +20,15 @@ struct ContentView: View {
                         if !theme.isAccent, #available(iOS 18.0, *) {
                             ChatExampleView(
                                 viewModel: ChatExampleViewModel(interactor: MockChatInteractor(isActive: true)),
-                                title: "Active chat example"
+                                title: "Active chat example",
+                                photoPickerBackend: photoPickerBackend.chatBackend
                             )
                             .chatTheme(themeColor: color)
                         } else {
                             ChatExampleView(
                                 viewModel: ChatExampleViewModel(interactor: MockChatInteractor(isActive: true)),
-                                title: "Active chat example"
+                                title: "Active chat example",
+                                photoPickerBackend: photoPickerBackend.chatBackend
                             )
                             .chatTheme(
                                 accentColor: color,
@@ -36,10 +39,18 @@ struct ContentView: View {
                     
                     NavigationLink("Simple chat example") {
                         if !theme.isAccent, #available(iOS 18.0, *) {
-                            ChatExampleView(viewModel: ChatExampleViewModel(), title: "Simple chat example")
+                            ChatExampleView(
+                                viewModel: ChatExampleViewModel(),
+                                title: "Simple chat example",
+                                photoPickerBackend: photoPickerBackend.chatBackend
+                            )
                                 .chatTheme(themeColor: color)
                         } else {
-                            ChatExampleView(viewModel: ChatExampleViewModel(), title: "Simple chat example")
+                            ChatExampleView(
+                                viewModel: ChatExampleViewModel(),
+                                title: "Simple chat example",
+                                photoPickerBackend: photoPickerBackend.chatBackend
+                            )
                                 .chatTheme(
                                     accentColor: color,
                                     images: theme.images
@@ -48,7 +59,7 @@ struct ContentView: View {
                     }
 
                     NavigationLink("Simple comments example") {
-                        CommentsExampleView()
+                        CommentsExampleView(photoPickerBackend: photoPickerBackend.chatBackend)
                             .chatTheme(.init(colors: .init(
                                 inputSignatureBG: .white.opacity(0.5),
                                 inputSignatureText: .black,
@@ -68,6 +79,21 @@ struct ContentView: View {
                 } header: {
                     Text("Basic examples")
                 }
+
+                Section {
+                    HStack {
+                        Text("Select the photo picker used when attaching photos in chat.")
+
+                        Picker("Photo picker", selection: $photoPickerBackend) {
+                            ForEach(ExamplePhotoPickerBackend.allCases) { backend in
+                                Text(backend.title).tag(backend)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    }
+                } header: {
+                    Text("Configuration")
+                }
             }
             .navigationTitle("Chat examples")
             .navigationBarTitleDisplayMode(.inline)
@@ -83,6 +109,27 @@ struct ContentView: View {
             }
         }
         .navigationViewStyle(.stack)
+    }
+}
+
+enum ExamplePhotoPickerBackend: String, CaseIterable, Identifiable {
+    case builtIn
+    case system
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .builtIn: return "Built-in"
+        case .system: return "System"
+        }
+    }
+
+    var chatBackend: ChatPhotoPickerBackend {
+        switch self {
+        case .builtIn: return .builtIn
+        case .system: return .system
+        }
     }
 }
 
@@ -135,5 +182,4 @@ enum ExampleThemeState: String {
         return true
     }
 }
-
 
