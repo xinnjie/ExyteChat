@@ -30,8 +30,8 @@ struct AttachmentsEditor<InputViewContent: View>: View {
     var availableInputs: [AvailableInputType]
     var localization: ChatLocalization
 
-    @State private var seleсtedMedias: [Media] = []
-    @State private var currentFullscreenMedia: Media?
+    @State private var seleсtedMedias: [ExyteMediaPicker.Media] = []
+    @State private var currentFullscreenMedia: ExyteMediaPicker.Media?
 
     var showingAlbums: Bool {
         inputViewModel.mediaPickerMode == .albums
@@ -113,12 +113,28 @@ struct AttachmentsEditor<InputViewContent: View>: View {
     }
 
     func assembleSelectedMedia() {
-        if !seleсtedMedias.isEmpty {
-            inputViewModel.attachments.medias = seleсtedMedias
-        } else if let media = currentFullscreenMedia {
-            inputViewModel.attachments.medias = [media]
-        } else {
-            inputViewModel.attachments.medias = []
+        Task {
+            let selectedMedia: [ExyteMediaPicker.Media]
+            if !seleсtedMedias.isEmpty {
+                selectedMedia = seleсtedMedias
+            } else if let media = currentFullscreenMedia {
+                selectedMedia = [media]
+            } else {
+                selectedMedia = []
+            }
+
+            var medias: [Media] = []
+            for media in selectedMedia {
+                guard let thumbnailURL = await media.getThumbnailURL() else {
+                    continue
+                }
+
+                let fullURL = await media.getURL() ?? thumbnailURL
+                let type: MediaType = media.type == .image ? .image : .video
+                medias.append(Media(id: media.id, type: type, thumbnailURL: thumbnailURL, fullURL: fullURL))
+            }
+
+            inputViewModel.attachments.medias = medias
         }
     }
 
@@ -155,6 +171,7 @@ struct AttachmentsEditor<InputViewContent: View>: View {
             HStack {
                 Button {
                     seleсtedMedias = []
+                    inputViewModel.attachments.medias = []
                     inputViewModel.showPicker = false
                 } label: {
                     Text(localization.cancelButtonText)

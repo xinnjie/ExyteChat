@@ -89,8 +89,8 @@ final class InputViewModel: ObservableObject {
         case .photo:
             #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             mediaPickerMode = .photos
-            showPicker = true
             #endif
+            showPicker = true
         case .add:
             #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
             mediaPickerMode = .camera
@@ -209,10 +209,7 @@ private extension InputViewModel {
   
     func subscribePicker() {
         $showPicker
-            .sink { [weak self] value in
-                if !value {
-                    self?.attachments.medias = []
-                }
+            .sink { _ in
             }
             .store(in: &subscriptions)
     }

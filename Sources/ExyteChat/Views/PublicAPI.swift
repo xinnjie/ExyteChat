@@ -291,6 +291,22 @@ public extension ChatView {
         return view
     }
 
+    func photoPickerBackend(_ backend: ChatPhotoPickerBackend) -> ChatView {
+        var view = self
+        view.inputViewCustomizationParameters.photoPickerBackend = backend
+        return view
+    }
+
+    func setPhotoPickerBackend(_ backend: ChatPhotoPickerBackend) -> ChatView {
+        photoPickerBackend(backend)
+    }
+
+    func setSystemPhotoPickerParameters(_ params: SystemPhotoPickerParameters) -> ChatView {
+        var view = self
+        view.inputViewCustomizationParameters.systemPhotoPickerParameters = params
+        return view
+    }
+
     // MARK: - Media picker
 
     #if EXYTE_CHAT_ENABLE_MEDIA_PICKER

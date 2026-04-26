@@ -56,6 +56,8 @@ struct InputViewCustomizationParameters {
     var availableInputs: [AvailableInputType] = [.text, .audio, .media]
     #endif
     var recorderSettings = RecorderSettings()
+    var photoPickerBackend: ChatPhotoPickerBackend = .builtIn
+    var systemPhotoPickerParameters = SystemPhotoPickerParameters()
     #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     var mediaPickerParameters = MediaPickerParameters()
     #endif
@@ -64,3 +66,16 @@ struct InputViewCustomizationParameters {
 #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
 public typealias MediaPickerParameters = ExyteMediaPicker.MediaPickerCutomizationParameters
 #endif
+
+public enum ChatPhotoPickerBackend: Sendable {
+    case builtIn
+    case system
+}
+
+public struct SystemPhotoPickerParameters: Sendable {
+    public var selectionLimit: Int?
+
+    public init(selectionLimit: Int? = nil) {
+        self.selectionLimit = selectionLimit
+    }
+}

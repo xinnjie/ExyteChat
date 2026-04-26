@@ -3,9 +3,6 @@
 //
 
 import Foundation
-#if EXYTE_CHAT_ENABLE_MEDIA_PICKER
-import ExyteMediaPicker
-#endif
 
 public enum AttachmentType: String, Codable, Sendable {
     case image
@@ -20,16 +17,14 @@ public enum AttachmentType: String, Codable, Sendable {
         }
     }
 
-    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
     public init(mediaType: MediaType) {
         switch mediaType {
         case .image:
             self = .image
-        default:
+        case .video:
             self = .video
         }
     }
-    #endif
 }
 
 public struct Attachment: Codable, Identifiable, Hashable, Sendable {

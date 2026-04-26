@@ -126,7 +126,6 @@ public struct Message: Identifiable, Sendable {
         status: Status? = nil,
         draft: DraftMessage
     ) async -> Message {
-        #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
         let attachments = await draft.medias.asyncCompactMap { media -> Attachment? in
             guard let thumbnailURL = await media.getThumbnailURL() else {
                 return nil
@@ -142,10 +141,6 @@ public struct Message: Identifiable, Sendable {
                 return Attachment(id: UUID().uuidString, thumbnail: thumbnailURL, full: fullURL, type: .video)
             }
         }
-        #else
-        // Without the picker dependency, drafts cannot contain built-in picker media.
-        let attachments: [Attachment] = []
-        #endif
 
         let giphyMediaId = draft.giphyMedia?.id
 

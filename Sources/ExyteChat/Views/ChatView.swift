@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+#if canImport(PhotosUI) && canImport(UIKit)
+import PhotosUI
+#endif
 #if canImport(GiphyUISDK)
 import GiphyUISDK
 #endif
@@ -105,6 +108,9 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
 
     @State private var giphyConfigured = false
     @State private var selectedGiphyMedia: GPHMedia? = nil
+    #if canImport(PhotosUI) && canImport(UIKit)
+    @State private var systemPhotoPickerItems: [PhotosPickerItem] = []
+    #endif
 
     public var body: some View {
         mainView
@@ -162,7 +168,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
             }
             #endif
             #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
-            .fullScreenCover(isPresented: $inputViewModel.showPicker) {
+            .fullScreenCover(isPresented: builtInMediaPickerPresented) {
                 AttachmentsEditor(
                     inputViewModel: inputViewModel,
                     inputViewBuilder: inputViewBuilder,
@@ -172,6 +178,22 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                 )
                 .environmentObject(globalFocusState)
                 .environmentObject(keyboardState)
+            }
+            #endif
+            #if canImport(PhotosUI) && canImport(UIKit)
+            .photosPicker(
+                isPresented: systemPhotoPickerPresented,
+                selection: $systemPhotoPickerItems,
+                maxSelectionCount: inputViewCustomizationParameters.systemPhotoPickerParameters.selectionLimit,
+                matching: .any(of: [.images, .videos])
+            )
+            .onChange(of: systemPhotoPickerItems) { _, newValue in
+                guard !newValue.isEmpty else { return }
+                Task {
+                    inputViewModel.attachments.medias = await SystemPhotoPickerMediaLoader.loadMedia(from: newValue)
+                    inputViewModel.showPicker = false
+                    systemPhotoPickerItems = []
+                }
             }
             #endif
             #if canImport(UIKit)
@@ -390,6 +412,41 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
         .onAppear(perform: inputViewModel.onStart)
         .onDisappear(perform: inputViewModel.onStop)
     }
+
+    #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
+    private var builtInMediaPickerPresented: Binding<Bool> {
+        Binding {
+            inputViewModel.showPicker &&
+            (inputViewCustomizationParameters.photoPickerBackend == .builtIn || inputViewModel.mediaPickerMode != .photos)
+        } set: { isPresented in
+            if !isPresented {
+                inputViewModel.showPicker = false
+            }
+        }
+    }
+    #endif
+
+    #if canImport(PhotosUI) && canImport(UIKit)
+    private var systemPhotoPickerPresented: Binding<Bool> {
+        Binding {
+            inputViewModel.showPicker &&
+            inputViewCustomizationParameters.photoPickerBackend == .system &&
+            isPhotoPickerMode
+        } set: { isPresented in
+            if !isPresented {
+                inputViewModel.showPicker = false
+            }
+        }
+    }
+
+    private var isPhotoPickerMode: Bool {
+        #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
+        inputViewModel.mediaPickerMode == .photos
+        #else
+        true
+        #endif
+    }
+    #endif
     
     #if canImport(UIKit)
     func messageMenu(_ row: MessageRow) -> some View {

@@ -331,6 +331,57 @@ struct InputView: View {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
+
+        if style == .message, !viewModel.attachments.medias.isEmpty {
+            mediaPreview
+        }
+    }
+
+    var mediaPreview: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(viewModel.attachments.medias) { media in
+                    ZStack(alignment: .topTrailing) {
+                        AsyncImage(url: media.thumbnailURL) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            default:
+                                theme.images.inputView.attach
+                                    .viewSize(24)
+                                    .frame(width: 56, height: 56)
+                            }
+                        }
+                        .frame(width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                        if media.type == .video {
+                            Image(systemName: "play.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.white)
+                                .padding(4)
+                                .background(Circle().fill(.black.opacity(0.55)))
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        }
+
+                        Button {
+                            viewModel.attachments.medias.removeAll { $0.id == media.id }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(4)
+                                .background(Circle().fill(.black.opacity(0.65)))
+                        }
+                        .offset(x: 4, y: -4)
+                    }
+                    .frame(width: 60, height: 60)
+                }
+            }
+            .padding(.horizontal, MessageView.horizontalScreenEdgePadding)
+        }
     }
     
     var attachButton: some View {
@@ -607,11 +658,7 @@ struct InputView: View {
     }
     
     private func isMediaAvailable() -> Bool {
-        #if EXYTE_CHAT_ENABLE_MEDIA_PICKER
         return availableInputs.contains(AvailableInputType.media)
-        #else
-        return false
-        #endif
     }
 }
 
